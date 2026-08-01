@@ -2939,14 +2939,18 @@ def read_state() -> dict:
 
 
 def claim_run(year: Optional[int]) -> bool:
-    """Mark a run as started, but only if one isn't already going.
+    """Mark a run as started, unless one is already going or this year is already built.
 
-    This has to happen under the lock in the request thread: if we left it to the
-    analysis thread, two POSTs arriving together would both pass the check and do
-    the whole job twice.
+    All three cases have to be decided under one lock in the request thread. Left to the
+    analysis thread, two POSTs arriving together would both pass the check and do the
+    whole job twice — and a request for an already-built year would flip the state to
+    "done" while a different year was still halfway through building.
     """
     with STATE_LOCK:
         if STATE["state"] == "running":
+            return False
+        if year_key(year) in REPORTS:
+            STATE.update(state="done", progress=100, step="Ready", error=None, year=year)
             return False
         STATE.update(state="running", progress=0, step="Opening database", error=None,
                      year=year)
@@ -3092,12 +3096,9 @@ class Handler(http.server.BaseHTTPRequestHandler):
             self._text(404, "Not found\n")
             return
         year = parse_year(parts.query)
-        if year_key(year) in REPORTS:
-            # Already built this year — nothing to do, the page will just fetch it.
-            set_state(state="done", progress=100, step="Ready", error=None, year=year)
-            self._json(200, read_state())
-            return
         if not claim_run(year):
+            # Either a run is already going, or this year is already built and the page
+            # can just go fetch it. Either way the current state says which.
             self._json(200, read_state())
             return
         threading.Thread(
