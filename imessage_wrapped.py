@@ -1939,6 +1939,9 @@ PAGE_HTML = """<!doctype html>
 
   /* ---- charts -------------------------------------------------------------- */
   .card { background:var(--bubble-grey); border-radius:20px; padding:20px 20px 14px; }
+  /* A card straight after a thread butts up against the last bubble and reads as part
+     of it. Sections that stack several cards space them out themselves. */
+  .thread + .card { margin-top:24px; }
   .card h3 { margin:0 0 2px; font-size:15px; font-weight:700; }
   .card .cap { margin:0 0 16px; color:var(--muted); font-size:13px; }
   svg { display:block; width:100%; height:auto; overflow:visible; }
@@ -2623,6 +2626,23 @@ function groupSection(d) {
 }
 
 /* ---- person drill-down ---------------------------------------------------- */
+/* Six sections down, the Back button at the top of the page is a long scroll away, so
+   the footer offers it again — and says which slice of history the page just counted,
+   which nothing else on a person's page does once you've filtered by year. */
+function personFooter(person) {
+  const f = document.createElement('footer');
+  const saves = el('div', 'saves');
+  const b = document.createElement('button');
+  b.textContent = '‹ Back to the report';
+  b.onclick = goBack;
+  saves.appendChild(b);
+  f.appendChild(saves);
+  f.appendChild(el('div', null,
+    (YEAR == null ? 'Your whole history with ' + firstName(person.name) + '.' : YEAR + ' only.') +
+    ' Counted on this Mac; nothing was uploaded.'));
+  return f;
+}
+
 function openPerson(item) {
   const person = DATA.people.find((p) => p.person_id === item.id);
   if (!person) return;
@@ -2662,6 +2682,7 @@ function openPerson(item) {
                  emojiSection(s), reactionSection(s), attachmentSection(s),
                  habitsSection(s)];
   parts.forEach((p) => p && body.appendChild(p));
+  body.appendChild(personFooter(person));
 
   $('detail').classList.add('open');
   $('detail').scrollTop = 0;
@@ -2675,7 +2696,10 @@ function closePerson() {
   document.body.style.overflow = '';
 }
 
-$('back').onclick = () => history.state && history.state.person ? history.back() : closePerson();
+/* Going back through history keeps the browser's own Back button in step; there is
+   nothing to pop when the page was opened some other way, so close it directly. */
+const goBack = () => (history.state && history.state.person ? history.back() : closePerson());
+$('back').onclick = goBack;
 window.onpopstate = closePerson;
 
 /* ---- year filter ---------------------------------------------------------- */
