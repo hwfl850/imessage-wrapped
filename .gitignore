@@ -1,0 +1,11 @@
+# Generated reports. These contain your actual message statistics — contact names,
+# who you talk to, when you're awake. Never commit one.
+*.json
+*.html
+
+__pycache__/
+*.pyc
+.DS_Store
+
+# The build plan this was written from. Not part of the shipped tool.
+imessage-wrapped-plan.md
