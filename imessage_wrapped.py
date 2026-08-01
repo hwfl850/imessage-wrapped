@@ -1908,7 +1908,9 @@ PAGE_HTML = """<!doctype html>
          color:var(--muted); font-size:10px; text-transform:uppercase;
          letter-spacing:.11em; font-weight:600; transition:opacity .4s ease; }
   .cue.gone { opacity:0; }
-  .cue svg { animation:nudge 1.9s ease-in-out infinite; }
+  /* The chart rule below stretches every svg to 100% width. Without an override the
+     cue's little chevron becomes a full-width arrow across the bottom of the screen. */
+  .cue svg { width:13px; height:8px; flex:none; animation:nudge 1.9s ease-in-out infinite; }
   @keyframes nudge { 0%,100% { transform:translateY(0); } 50% { transform:translateY(4px); } }
 
   /* ---- ranked list (people, groups) --------------------------------------- */
@@ -1919,12 +1921,16 @@ PAGE_HTML = """<!doctype html>
     background:none; border:0; font:inherit; color:inherit; text-align:left; width:100%;
     cursor:pointer; transition:background .15s ease;
   }
-  .rank .r[disabled] { cursor:default; }
+  /* Rows are buttons, and the global button rule fades anything disabled to 45%. A
+     non-clickable row is still data, not a dimmed control — it reads at full strength. */
+  .rank .r[disabled] { cursor:default; opacity:1; }
   .rank .r:hover:not([disabled]) { background:var(--bubble-grey); }
   .rank .r .i { color:var(--muted); font-size:12px; font-variant-numeric:tabular-nums; }
   .rank .r .nm { font-weight:600; overflow:hidden; text-overflow:ellipsis;
                  white-space:nowrap; }
-  .rank .r .ct { font-variant-numeric:tabular-nums; color:var(--muted); font-size:14px; }
+  /* The count is the point of the row, so it reads at full contrast. Only the rank
+     index stays muted — it's an ordinal, not data. */
+  .rank .r .ct { font-variant-numeric:tabular-nums; color:var(--ink); font-size:14px; }
   .rank .r .track { grid-column:2 / 4; height:5px; border-radius:3px;
                     background:var(--bubble-grey); overflow:hidden; margin-top:6px; }
   .rank .r .track i { display:block; height:100%; width:0; border-radius:3px;
@@ -2057,6 +2063,12 @@ function dur(s) {
   if (s < 86400) return +(s / 3600).toFixed(1) + ' hr';
   return num(s / 86400) + ' days';
 }
+
+/* The median is what "typically" means; the average is what the long silences do to
+   that number. It's trimmed of the top and bottom 10% before it gets here, so a single
+   three-week gap can't run away with it. */
+const average = (s) => (s == null ? null : 'Average ' + dur(s));
+const joinSub = (...parts) => parts.filter(Boolean).join(' · ');
 
 function monthYear(iso) {
   return new Date(iso).toLocaleDateString(undefined, { month:'long', year:'numeric' });
@@ -2193,11 +2205,13 @@ function headline(d) {
 
   if (s.reply.you_replies > 20) {
     bubbles.push({ who:'them', raw: dur(s.reply.them_median_seconds),
-                   text: 'is how long ' + name + ' makes you wait, typically.' });
+                   text: 'is how long ' + name + ' makes you wait, typically.',
+                   sub: average(s.reply.them_trimmed_mean_seconds) });
     bubbles.push({ who:'me', raw: dur(s.reply.you_median_seconds),
                    text: 'is how long you make them wait.',
-                   sub: s.reply.you_median_seconds <= s.reply.them_median_seconds
-                        ? 'You are the faster one.' : name + ' is the faster one.' });
+                   sub: joinSub(s.reply.you_median_seconds <= s.reply.them_median_seconds
+                                ? 'You are the faster one.' : name + ' is the faster one.',
+                                average(s.reply.you_trimmed_mean_seconds)) });
   }
   if (s.streak.days > 1) {
     bubbles.push({ who:'them', big: s.streak.days, text: 'days in a row, your longest run.',
@@ -2631,9 +2645,11 @@ function openPerson(item) {
   ];
   if (s.reply.you_replies > 10) {
     bubbles.push({ who: 'them', raw: dur(s.reply.them_median_seconds),
-                   text: 'median reply from ' + name + '.' });
+                   text: 'median reply from ' + name + '.',
+                   sub: average(s.reply.them_trimmed_mean_seconds) });
     bubbles.push({ who: 'me', raw: dur(s.reply.you_median_seconds),
-                   text: 'median reply from you.' });
+                   text: 'median reply from you.',
+                   sub: average(s.reply.you_trimmed_mean_seconds) });
   }
   if (s.length) {
     bubbles.push({ who: 'them', big: s.length.you_median,
