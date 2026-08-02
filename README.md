@@ -12,6 +12,11 @@ the app to Applications, and launch it. It walks you through the one permission 
 requires and then shows your report. Universal, so it runs natively on Apple silicon and
 Intel.
 
+> **The first launch takes one extra step.** macOS will say the app "cannot be opened
+> because Apple cannot check it for malicious software." That's expected — see
+> [Opening it the first time](#opening-it-the-first-time) below. It's about ten seconds,
+> once.
+
 ### Or run the script
 
 Everything the app does, the original single Python file still does on its own:
@@ -146,17 +151,38 @@ report you see is byte-for-byte the page the script serves.
 The engine is a child process of the app, so the Full Disk Access you grant the app is
 what it inherits — and it shuts itself down the moment the app quits.
 
-### First launch
+### Opening it the first time
 
-The release build is signed, but not notarised — notarising requires a paid Apple
-Developer account, which this project doesn't have. So the first time you open it, macOS
-will say it can't verify the developer. To get past that:
+The app is signed, but **not notarised**. Notarisation requires a paid Apple Developer
+account, and this project doesn't have one — so macOS refuses the app on sight the first
+time, with *"Apple cannot check it for malicious software."*
 
-**System Settings → Privacy & Security**, scroll down to the message about *iMessage
-Wrapped*, and click **Open Anyway**.
+This is Gatekeeper telling you it doesn't recognise the developer. It is not a virus
+warning, and it says nothing about what the app does. Getting past it takes ten seconds:
 
-You only have to do this once. If you'd rather not take an unnotarised binary at its
-word, build it yourself — it's one command — or just run the Python script instead.
+**On macOS 15 (Sequoia) and later**
+
+1. Double-click the app. Dismiss the warning.
+2. Open **System Settings → Privacy & Security** and scroll down. There's a line saying
+   *"iMessage Wrapped" was blocked to protect your Mac*, with an **Open Anyway** button.
+3. Click it, authenticate, and confirm **Open Anyway** once more.
+
+**On macOS 13 and 14**
+
+Control-click (or right-click) the app in Applications, choose **Open**, then **Open**
+again in the dialog. Apple removed this shortcut in Sequoia, which is why the newer
+versions need the trip through Settings.
+
+Either way you do it once. macOS remembers the app afterwards and launches it normally.
+
+If you'd rather not take an unnotarised binary at its word — a completely reasonable
+position for something that reads your messages — you have two better options:
+
+- **Build it yourself.** One command, no Xcode required. See
+  [Building it yourself](#building-it-yourself) below. A build you compiled is signed by
+  your own machine and opens without any of this.
+- **Skip the app.** Run `imessage_wrapped.py` directly. It's one file, it's readable in
+  an afternoon, and it does everything the app does.
 
 ### Building it yourself
 

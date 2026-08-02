@@ -41,8 +41,12 @@ The default is an ad-hoc signature (`codesign -s -`), which is enough to run on 
 machine that built it. On anyone else's Mac, Gatekeeper refuses it until they go to
 System Settings → Privacy & Security and click **Open Anyway**.
 
-To avoid that you need a **Developer ID Application** certificate, which means a paid
-Apple Developer account. With one:
+The published releases are ad-hoc signed, so that first-launch step is expected — the
+main README walks users through it. A build you compile yourself is signed by your own
+machine and opens without any of it.
+
+To ship something that opens cleanly for everyone you need a **Developer ID
+Application** certificate, which means a paid Apple Developer account. With one:
 
 ```bash
 SIGN_IDENTITY="Developer ID Application: Your Name (TEAMID)" ./mac/build.sh
