@@ -143,6 +143,12 @@ releases. The tool handles that rather than assuming:
 
 Copyright © 2026 Henry White. All rights reserved.
 
-The source is public to read. It is **not** open source — no permission is granted
-to use, copy, modify or redistribute it. See [LICENSE](LICENSE), and get in touch
-about licensing.
+**Free to use.** Download it and run it on your own Mac as much as you like.
+
+It is source-available, not open source. You may not redistribute it, sell it,
+modify it, build on it, or use it commercially — those rights are reserved. See
+[LICENSE](LICENSE) for the exact terms, and get in touch for a commercial or
+redistribution licence.
+
+The report it builds from your own messages is yours. The licence makes no claim
+on it.

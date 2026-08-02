@@ -1,23 +1,62 @@
+iMessage Wrapped — Personal Use License
+
 Copyright (c) 2026 Henry White. All rights reserved.
 
-This software and its source code are proprietary.
+This software is source-available, not open source. The only rights granted are
+the ones written below.
 
-No permission is granted to any person to use, copy, modify, merge, publish,
-distribute, sublicense, create derivative works from, or sell copies of this
-software or any portion of it, by any means, without the prior written
-permission of the copyright holder.
+1. GRANT
 
-Viewing this repository does not grant any license to the software. Any rights
-arising from GitHub's Terms of Service in connection with hosting this
-repository publicly are limited to those the Terms require, and no other rights
-are granted, whether expressly, by implication, by estoppel, or otherwise.
+   You may download a copy of this software and run it on computers you own or
+   control, for your own personal, non-commercial use, free of charge. You may
+   keep a backup copy for that purpose.
 
-For licensing enquiries, contact the copyright holder.
+2. RESTRICTIONS
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+   Except as section 1 permits, and without prior written permission from the
+   copyright holder, you may not:
+
+   (a) distribute, publish, share, host, or otherwise make this software or any
+       part of it available to anyone else, whether or not for a fee;
+
+   (b) sell, rent, lease, sublicense, or offer this software as part of any
+       product or service;
+
+   (c) modify, adapt, translate, or create derivative works from this software,
+       or incorporate any part of it into other software;
+
+   (d) use this software for any commercial purpose, including use within or on
+       behalf of a business or other organisation;
+
+   (e) remove, obscure, or alter any copyright, licence, or attribution notice.
+
+   Reports that this software produces from your own data are yours. Nothing in
+   this licence claims any rights in them, and you may do as you like with them.
+
+3. FORKING
+
+   Making this repository public grants other GitHub users the rights described
+   in GitHub's Terms of Service, which include viewing and forking it within
+   GitHub. That is the extent of it. Those rights do not permit any use outside
+   of GitHub, and nothing else in this licence is waived by them.
+
+4. RESERVATION OF RIGHTS
+
+   All rights not expressly granted in section 1 are reserved by the copyright
+   holder. Commercial and redistribution licences are available — please get in
+   touch.
+
+5. TERMINATION
+
+   This licence ends automatically if you breach any part of it. On termination
+   you must stop using the software and delete your copies.
+
+6. NO WARRANTY
+
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+   SOFTWARE.
