@@ -9,3 +9,7 @@ __pycache__/
 
 # The build plan this was written from. Not part of the shipped tool.
 imessage-wrapped-plan.md
+
+# Mac app build products.
+mac/build/
+mac/dist/

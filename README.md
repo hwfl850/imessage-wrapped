@@ -3,7 +3,18 @@
 Your Messages history, turned into a Spotify-Wrapped-style report — built entirely on
 your own Mac.
 
-One Python file. No installs, no accounts, no network. Run it, click a button, scroll.
+No installs, no accounts, no network. Open it, click a button, scroll.
+
+### Get the app
+
+**[Download iMessage Wrapped for macOS](../../releases/latest)** — open the `.dmg`, drag
+the app to Applications, and launch it. It walks you through the one permission macOS
+requires and then shows your report. Universal, so it runs natively on Apple silicon and
+Intel.
+
+### Or run the script
+
+Everything the app does, the original single Python file still does on its own:
 
 ```bash
 python3 imessage_wrapped.py
@@ -36,25 +47,40 @@ without regenerating what you've already built.
 
 ## Requirements
 
-- macOS with Messages set up
-- Python 3.9 or newer — **the one that ships with macOS is fine**
-- Full Disk Access for your terminal (see below)
+- A Mac with Messages set up — macOS 13 or later for the app, older is fine for the
+  script
+- Full Disk Access, granted once (see below)
 
-No `pip install`. No `requirements.txt`. Nothing to download. The standard library is
-the whole dependency list.
+For the **app**, that's the whole list — it carries its own Python inside the bundle.
+
+For the **script**, you also need Python 3.9 or newer. Modern macOS doesn't really ship
+one: `/usr/bin/python3` is a stub that offers to install Apple's Command Line Tools the
+first time you run it. Accept that prompt, or install Python from
+[python.org](https://www.python.org/downloads/macos/). Either works.
+
+Either way there is no `pip install`, no `requirements.txt`, and nothing to download.
+The standard library is the whole dependency list.
 
 ## Full Disk Access
 
-macOS protects `~/Library/Messages/`, so your terminal needs permission to read it:
+macOS protects `~/Library/Messages/`, so it has to be granted explicitly. Whichever way
+you run this, you can revoke the permission again the moment you're done.
+
+**In the app**, this is the second screen. Click **Open Privacy Settings**, switch
+*iMessage Wrapped* on — it's already in the list — and the window carries on by itself.
+The permission goes to the app alone, and to nothing else on your Mac.
+
+**For the script**, the permission has to go to your terminal instead:
 
 1. **System Settings → Privacy & Security → Full Disk Access**
 2. Turn it on for **Terminal** (or iTerm, or whichever terminal you use)
 3. **Quit the terminal completely** (⌘Q — closing the window isn't enough) and reopen it
 
 Run `python3 imessage_wrapped.py --selftest` to confirm it worked. If it didn't, the
-app tells you exactly this in the browser rather than crashing.
+tool tells you exactly this in the browser rather than crashing.
 
-You can revoke the permission again the moment you're done.
+Note that this is the broader of the two: a terminal with Full Disk Access passes it on
+to everything you run from it. If that bothers you, use the app.
 
 ## Privacy
 
@@ -72,8 +98,9 @@ This is the entire point of the project, so it's worth being specific.
   page can't reach it by DNS rebinding while you have it open.
 - **Message text is never written to disk.** The report holds counts, timestamps and
   contact names. Nothing is saved anywhere unless you click a Save button.
-- **It stops when you stop it.** Ctrl+C shuts the server down and deletes any temporary
-  database snapshot it made.
+- **It stops when you stop it.** Ctrl+C — or quitting the app — shuts the server down
+  and deletes any temporary database snapshot it made. The bundled engine also watches
+  the app that launched it, so it can't be left running behind your back.
 
 If your Messages database is mid-write (WAL mode), the tool copies it to a temp
 directory to read it, and deletes that copy on exit. That's the only file it ever
@@ -88,7 +115,9 @@ Two buttons at the bottom:
 - **Download the raw JSON** — every number the report is built from, if you'd rather
   do your own analysis.
 
-Both are plain downloads to your Downloads folder. Nothing is uploaded either way.
+Both are plain downloads to your Downloads folder. Nothing is uploaded either way. In
+the app, the two buttons hand the file to your default browser, which saves it there the
+same as any other download.
 
 ## Command line
 
@@ -104,6 +133,39 @@ python3 imessage_wrapped.py --no-browser       # print the URL, don't open anyth
 `--selftest` is the useful one if something looks wrong. It reports your Python and
 macOS versions, the database size and schema variant, how many messages it found, how
 many it could extract text from, and how many contacts it resolved to real names.
+
+## The Mac app
+
+The app is the same tool with a front door on it. Inside the bundle are two things: a
+small native shell (SwiftUI/AppKit) that handles the permission screens and displays the
+report, and the Python engine — the file at the root of this repo — frozen with its own
+interpreter so nothing has to be installed. The shell starts the engine on a random
+loopback port, reads that port back off its stdout, and points a web view at it. The
+report you see is byte-for-byte the page the script serves.
+
+The engine is a child process of the app, so the Full Disk Access you grant the app is
+what it inherits — and it shuts itself down the moment the app quits.
+
+### First launch
+
+The release build is signed, but not notarised — notarising requires a paid Apple
+Developer account, which this project doesn't have. So the first time you open it, macOS
+will say it can't verify the developer. To get past that:
+
+**System Settings → Privacy & Security**, scroll down to the message about *iMessage
+Wrapped*, and click **Open Anyway**.
+
+You only have to do this once. If you'd rather not take an unnotarised binary at its
+word, build it yourself — it's one command — or just run the Python script instead.
+
+### Building it yourself
+
+```bash
+./mac/build.sh
+```
+
+That produces `mac/dist/iMessage Wrapped.app` and a DMG beside it. See
+[mac/README.md](mac/README.md) for what it needs and how to sign a build properly.
 
 ## How it works
 
@@ -130,8 +192,8 @@ releases. The tool handles that rather than assuming:
 
 ## Limitations
 
-- **macOS only.** It reads a macOS database with macOS's Python. There's no iPhone-only
-  path — Messages on your Mac has to have the history.
+- **macOS only.** There's no iPhone-only path — iOS sandboxes its own message database
+  away from every other app, so Messages on your Mac has to have the history.
 - **Only what this Mac has.** iCloud keeps older conversations on the server until
   something opens them. If your report starts later than you expected, that's why.
 - **Contact names need the Contacts app.** Numbers you've never saved stay numbers.
