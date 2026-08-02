@@ -141,4 +141,8 @@ releases. The tool handles that rather than assuming:
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+Copyright © 2026 Henry White. All rights reserved.
+
+The source is public to read. It is **not** open source — no permission is granted
+to use, copy, modify or redistribute it. See [LICENSE](LICENSE), and get in touch
+about licensing.
